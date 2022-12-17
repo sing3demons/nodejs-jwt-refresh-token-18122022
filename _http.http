@@ -1,0 +1,25 @@
+@uri=http://127.0.0.1:8080
+GET {{uri}} HTTP/1.1
+
+### Login 
+# @name authen
+POST {{uri}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "John"
+}
+
+###
+@token = {{authen.response.body.$.access_token}}
+@refreshToken = {{authen.response.body.$.refresh_token}}
+
+###
+GET {{uri}}/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{uri}}/auth/refresh HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{refreshToken}}
