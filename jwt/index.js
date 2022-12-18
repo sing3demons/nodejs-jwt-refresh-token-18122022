@@ -51,9 +51,33 @@ const jwtRefreshTokenValidate = (req, res, next) => {
   }
 }
 
+const generateJWT = user => {
+  const accessToken = jwt.sign(
+    {
+      sub: user._id,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: '1h',
+    }
+  )
+
+  const refreshToken = jwt.sign(
+    {
+      sub: user._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: '1d',
+    }
+  )
+  return { accessToken, refreshToken }
+}
+
 module.exports = {
   jwtGenerate,
   jwtRefreshTokenGenerate,
   jwtValidate,
   jwtRefreshTokenValidate,
+  generateJWT,
 }

@@ -1,0 +1,21 @@
+@uri=http://127.0.0.1:8080/api/user
+
+POST {{uri}}/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "first_name": "kumneung",
+  "last_name": "panthong",
+  "email": "sing@dev.com",
+  "password": "123456"
+}
+
+###
+POST {{uri}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "sing@dev.com",
+  "password": "123456"
+}
+###

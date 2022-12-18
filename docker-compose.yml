@@ -7,7 +7,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=p@ssw0rd
-      - MONGO_INITDB_DATABASE=EnterLand
+      - MONGO_INITDB_DATABASE=node-jwt
     ports:
       - 27017:27017
     # volumes:
