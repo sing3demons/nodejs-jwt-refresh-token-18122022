@@ -1,7 +1,13 @@
 const { Router } = require('express')
 const User = require('../models/user.js')
-const { generateJWT } = require('../jwt/index.js')
+const { generateJWT, jwtVerify, jwtRefreshTokenVerify } = require('../jwt/index.js')
 const router = Router()
+
+router.get('/profile', jwtVerify, async (req, res) => {
+  const { userId } = req.tokenDt
+  const user = await User.findById(userId)
+  res.json(user)
+})
 
 router.post('/auth/register', async (req, res) => {
   const { first_name, last_name, email, password } = req.body
@@ -54,6 +60,20 @@ router.post('/auth/login', async (req, res) => {
     resultCode: 20000,
     resultDescription: 'login',
     resultData: { accessToken, refreshToken },
+  })
+})
+
+router.post('/auth/refresh', jwtRefreshTokenVerify, async (req, res) => {
+  const { userId } = req.refreshToken
+  const user = await User.findById(userId)
+
+  if (!user) return res.sendStatus(401)
+
+  const { accessToken, refreshToken } = generateJWT(user)
+
+  return res.json({
+    access_token: accessToken,
+    refresh_token: refreshToken,
   })
 })
 

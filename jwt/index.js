@@ -32,6 +32,39 @@ const jwtValidate = (req, res, next) => {
   }
 }
 
+const jwtVerify = (req, res, next) => {
+  try {
+    if (!req.headers['authorization']) return res.sendStatus(401)
+
+    const token = req.headers['authorization'].replace('Bearer ', '')
+
+    const { sub } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    const tokenDt = { userId: sub }
+
+    req.tokenDt = tokenDt
+    console.log(tokenDt)
+    next()
+  } catch (error) {
+    console.log(error)
+    return res.sendStatus(403)
+  }
+}
+
+const jwtRefreshTokenVerify = (req, res, next) => {
+  try {
+    if (!req.headers['authorization']) return res.sendStatus(401)
+    const token = req.headers['authorization'].replace('Bearer ', '')
+
+    const { sub } = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+    const refreshToken = { userId: sub }
+    req.refreshToken = refreshToken
+
+    next()
+  } catch (error) {
+    return res.sendStatus(403)
+  }
+}
+
 const jwtRefreshTokenValidate = (req, res, next) => {
   try {
     if (!req.headers['authorization']) return res.sendStatus(401)
@@ -80,4 +113,6 @@ module.exports = {
   jwtValidate,
   jwtRefreshTokenValidate,
   generateJWT,
+  jwtVerify,
+  jwtRefreshTokenVerify,
 }
